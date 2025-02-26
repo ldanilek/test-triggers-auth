@@ -6,6 +6,8 @@ import { mutation as rawMutation, internalMutation as rawInternalMutation } from
 import { DataModel } from "./_generated/dataModel";
 import { Triggers } from "convex-helpers/server/triggers";
 import { customCtx, customMutation } from "convex-helpers/server/customFunctions";
+import { zCustomMutation } from "convex-helpers/server/zod";
+import { z } from "zod";
 
 const triggers = new Triggers<DataModel>();
 
@@ -21,8 +23,8 @@ triggers.register("numbers", async (ctx, change) => {
   });
 });
 
-export const mutation = customMutation(rawMutation, customCtx(triggers.wrapDB));
-export const internalMutation = customMutation(rawInternalMutation, customCtx(triggers.wrapDB));
+export const mutation = zCustomMutation(rawMutation, customCtx(triggers.wrapDB));
+export const internalMutation = zCustomMutation(rawInternalMutation, customCtx(triggers.wrapDB));
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
@@ -56,7 +58,7 @@ export const listNumbers = query({
 export const addNumber = mutation({
   // Validators for arguments.
   args: {
-    value: v.number(),
+    value: z.number(),
   },
 
   // Mutation implementation.
